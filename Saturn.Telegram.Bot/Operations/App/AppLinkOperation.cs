@@ -21,7 +21,7 @@ public class AppLinkOperation : IOperation
     public async Task OnMessageAsync(Message msg, UpdateType type)
     {
         var keyboard = new InlineKeyboardMarkup(
-            InlineKeyboardButton.WithUrl("Открыть", "https://t.me/rt5263bot/app?startapp={msg.Chat.Id}"));
+            InlineKeyboardButton.WithUrl("Открыть", $"https://t.me/rt5263bot/app?startapp={msg.Chat.Id}"));
 
         await _botClient.SendMessage(msg.Chat, "НаморApp", replyMarkup: keyboard);
     }
