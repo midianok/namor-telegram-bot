@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>Saturn.Bot.Service</RootNamespace>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <NoWarn>$(NoWarn);NU1901;NU1902;NU1903;NU1904</NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.4" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.4" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.5" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.5" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.5" />
+        <PackageReference Include="OpenAI" Version="2.10.0" />
+        <PackageReference Include="Telegram.Bot" Version="22.9.6" />
+        <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="14.11.1" />
+        <PackageReference Include="Xabe.FFmpeg" Version="6.0.2" />
+        <PackageReference Include="Xabe.FFmpeg.Downloader" Version="6.0.2" />
+        <PackageReference Include="YoutubeDLSharp" Version="1.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Saturn.Telegram.Db\Saturn.Telegram.Db.csproj" />
+      <ProjectReference Include="..\Saturn.Telegram.Lib\Saturn.Telegram.Lib.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="Media\**">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="Help.md">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
+</Project>
