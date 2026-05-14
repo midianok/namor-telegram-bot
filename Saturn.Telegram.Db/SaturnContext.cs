@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Saturn.Telegram.Db.Configurations;
 using Saturn.Telegram.Db.Entities;
 
@@ -16,14 +16,6 @@ public sealed class SaturnContext : DbContext
 
     public DbSet<OperationCallEntity> OperationCalls { get; set; } = null!;
 
-    public DbSet<ImagePromptEntity> ImagePrompts { get; set; } = null!;
-
-    public DbSet<UserKarmaEntity> UserKarma { get; set; } = null!;
-
-    public DbSet<KarmaChangeEntity> KarmaChanges { get; set; } = null!;
-
-    public DbSet<NamorevoGoreScoreEntity> NamorevoGoreScores { get; set; } = null!;
-
     public SaturnContext(DbContextOptions<SaturnContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -33,9 +25,5 @@ public sealed class SaturnContext : DbContext
         modelBuilder.ApplyConfiguration(new UserEntityConfiguration());
         modelBuilder.ApplyConfiguration(new AiAgentEntityConfiguration());
         modelBuilder.ApplyConfiguration(new OperationCallEntityConfiguration());
-        modelBuilder.ApplyConfiguration(new ImagePromptEntityConfiguration());
-        modelBuilder.ApplyConfiguration(new UserKarmaEntityConfiguration());
-        modelBuilder.ApplyConfiguration(new KarmaChangeEntityConfiguration());
-        modelBuilder.ApplyConfiguration(new NamorevoGoreScoreEntityConfiguration());
     }
 }

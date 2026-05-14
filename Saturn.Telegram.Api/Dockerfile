@@ -8,6 +8,8 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Saturn.Telegram.Api/Saturn.Telegram.Api.csproj", "Saturn.Telegram.Api/"]
+COPY ["Saturn.Telegram.Db/Saturn.Telegram.Db.csproj", "Saturn.Telegram.Db/"]
+COPY ["Saturn.Telegram.Lib/Saturn.Telegram.Lib.csproj", "Saturn.Telegram.Lib/"]
 RUN dotnet restore "Saturn.Telegram.Api/Saturn.Telegram.Api.csproj"
 COPY . .
 WORKDIR "/src/Saturn.Telegram.Api"

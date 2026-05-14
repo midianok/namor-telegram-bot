@@ -1,29 +1,26 @@
 ﻿services:
-  saturn:
+  bot:
     platform: linux/amd64
-    image: ghcr.io/midianok/saturn:latest
+    image: ghcr.io/midianok/namor:latest
     build:
       context: .
       dockerfile: ./Saturn.Telegram.Bot/Dockerfile
     env_file:
       - ./.env
-    volumes:
-      - ./youtube_cookies.txt:/app/youtube_cookies.txt
-      - ./instagram_cookies.txt:/app/instagram_cookies.txt
     depends_on:
       db:
         condition: service_healthy
 
-  saturn-api:
+  api:
     platform: linux/amd64
-    image: ghcr.io/midianok/saturn-api:latest
+    image: ghcr.io/midianok/namor-api:latest
     build:
       context: .
       dockerfile: ./Saturn.Telegram.Api/Dockerfile
     env_file:
       - ./.env
     ports:
-      - "5001:5001"
+      - "5002:5002"
     depends_on:
       db:
         condition: service_healthy
@@ -37,7 +34,7 @@
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - "15432:5432"
+      - "25432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:

@@ -13,33 +13,32 @@ namespace Saturn.Telegram.Db.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "chats",
+                name: "ai_agents",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    name = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                    prompt = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_ai_agents", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "operation_calls",
                 columns: table => new
                 {
                     id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    type = table.Column<int>(type: "integer", nullable: false),
-                    name = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("pk_chats", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "cooldowns",
-                columns: table => new
-                {
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
-                    user_id = table.Column<long>(type: "bigint", nullable: true),
+                    operation_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: false),
                     chat_id = table.Column<long>(type: "bigint", nullable: false),
-                    operation = table.Column<string>(type: "text", nullable: false),
-                    cooldown_seconds = table.Column<int>(type: "integer", nullable: false),
-                    message = table.Column<string>(type: "text", nullable: true)
+                    user_id = table.Column<long>(type: "bigint", nullable: false),
+                    called_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_cooldowns", x => x.id);
+                    table.PrimaryKey("pk_operation_calls", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -58,6 +57,26 @@ namespace Saturn.Telegram.Db.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "chats",
+                columns: table => new
+                {
+                    id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    type = table.Column<int>(type: "integer", nullable: false),
+                    name = table.Column<string>(type: "text", nullable: true),
+                    ai_agent_id = table.Column<Guid>(type: "uuid", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_chats", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_chats_ai_agents_ai_agent_id",
+                        column: x => x.ai_agent_id,
+                        principalTable: "ai_agents",
+                        principalColumn: "id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "messages",
                 columns: table => new
                 {
@@ -65,8 +84,10 @@ namespace Saturn.Telegram.Db.Migrations
                     chat_id = table.Column<long>(type: "bigint", nullable: false),
                     user_id = table.Column<long>(type: "bigint", nullable: false),
                     type = table.Column<int>(type: "integer", nullable: false),
-                    text = table.Column<string>(type: "text", nullable: true),
-                    sticker_id = table.Column<string>(type: "text", nullable: true),
+                    text = table.Column<string>(type: "character varying(4096)", maxLength: 4096, nullable: true),
+                    sticker_id = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    reply_to_message_id = table.Column<long>(type: "bigint", nullable: true),
+                    reply_to_message_chat_id = table.Column<long>(type: "bigint", nullable: true),
                     message_date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
@@ -87,6 +108,11 @@ namespace Saturn.Telegram.Db.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "ix_chats_ai_agent_id",
+                table: "chats",
+                column: "ai_agent_id");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_messages_chat_id",
                 table: "messages",
                 column: "chat_id");
@@ -101,16 +127,19 @@ namespace Saturn.Telegram.Db.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "cooldowns");
+                name: "messages");
 
             migrationBuilder.DropTable(
-                name: "messages");
+                name: "operation_calls");
 
             migrationBuilder.DropTable(
                 name: "chats");
 
             migrationBuilder.DropTable(
                 name: "users");
+
+            migrationBuilder.DropTable(
+                name: "ai_agents");
         }
     }
 }

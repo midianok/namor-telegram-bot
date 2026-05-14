@@ -76,84 +76,6 @@ namespace Saturn.Telegram.Db.Migrations
                     b.ToTable("chats", (string)null);
                 });
 
-            modelBuilder.Entity("Saturn.Telegram.Db.Entities.ImagePromptEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
-                    b.Property<string>("Keywords")
-                        .IsRequired()
-                        .HasMaxLength(512)
-                        .HasColumnType("character varying(512)")
-                        .HasColumnName("keywords");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)")
-                        .HasColumnName("name");
-
-                    b.Property<string>("Prompt")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("prompt");
-
-                    b.HasKey("Id")
-                        .HasName("pk_image_prompts");
-
-                    b.ToTable("image_prompts", (string)null);
-                });
-
-            modelBuilder.Entity("Saturn.Telegram.Db.Entities.KarmaChangeEntity", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<long>("ChatId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("chat_id");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<int>("Delta")
-                        .HasColumnType("integer")
-                        .HasColumnName("delta");
-
-                    b.Property<long>("FromUserId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("from_user_id");
-
-                    b.Property<long>("MessageId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("message_id");
-
-                    b.Property<long>("ToUserId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("to_user_id");
-
-                    b.HasKey("Id")
-                        .HasName("pk_karma_changes");
-
-                    b.HasIndex("CreatedAt")
-                        .HasDatabaseName("ix_karma_changes_created_at");
-
-                    b.HasIndex("FromUserId")
-                        .HasDatabaseName("ix_karma_changes_from_user_id");
-
-                    b.HasIndex("ToUserId")
-                        .HasDatabaseName("ix_karma_changes_to_user_id");
-
-                    b.ToTable("karma_changes", (string)null);
-                });
-
             modelBuilder.Entity("Saturn.Telegram.Db.Entities.MessageEntity", b =>
                 {
                     b.Property<long>("Id")
@@ -204,22 +126,6 @@ namespace Saturn.Telegram.Db.Migrations
                         .HasDatabaseName("ix_messages_user_id_chat_id");
 
                     b.ToTable("messages", (string)null);
-                });
-
-            modelBuilder.Entity("Saturn.Telegram.Db.Entities.NamorevoGoreScoreEntity", b =>
-                {
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("user_id");
-
-                    b.Property<int>("Score")
-                        .HasColumnType("integer")
-                        .HasColumnName("score");
-
-                    b.HasKey("UserId")
-                        .HasName("pk_namorevo_gore_scores");
-
-                    b.ToTable("namorevo_gore_scores", (string)null);
                 });
 
             modelBuilder.Entity("Saturn.Telegram.Db.Entities.OperationCallEntity", b =>
@@ -282,22 +188,6 @@ namespace Saturn.Telegram.Db.Migrations
                     b.ToTable("users", (string)null);
                 });
 
-            modelBuilder.Entity("Saturn.Telegram.Db.Entities.UserKarmaEntity", b =>
-                {
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint")
-                        .HasColumnName("user_id");
-
-                    b.Property<int>("Value")
-                        .HasColumnType("integer")
-                        .HasColumnName("value");
-
-                    b.HasKey("UserId")
-                        .HasName("pk_user_karma");
-
-                    b.ToTable("user_karma", (string)null);
-                });
-
             modelBuilder.Entity("Saturn.Telegram.Db.Entities.ChatEntity", b =>
                 {
                     b.HasOne("Saturn.Telegram.Db.Entities.AiAgentEntity", "AiAgent")
@@ -306,27 +196,6 @@ namespace Saturn.Telegram.Db.Migrations
                         .HasConstraintName("fk_chats_ai_agents_ai_agent_id");
 
                     b.Navigation("AiAgent");
-                });
-
-            modelBuilder.Entity("Saturn.Telegram.Db.Entities.KarmaChangeEntity", b =>
-                {
-                    b.HasOne("Saturn.Telegram.Db.Entities.UserEntity", "FromUser")
-                        .WithMany()
-                        .HasForeignKey("FromUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_karma_changes_users_from_user_id");
-
-                    b.HasOne("Saturn.Telegram.Db.Entities.UserEntity", "ToUser")
-                        .WithMany()
-                        .HasForeignKey("ToUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_karma_changes_users_to_user_id");
-
-                    b.Navigation("FromUser");
-
-                    b.Navigation("ToUser");
                 });
 
             modelBuilder.Entity("Saturn.Telegram.Db.Entities.MessageEntity", b =>
@@ -346,30 +215,6 @@ namespace Saturn.Telegram.Db.Migrations
                         .HasConstraintName("fk_messages_users_user_id");
 
                     b.Navigation("Chat");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Saturn.Telegram.Db.Entities.NamorevoGoreScoreEntity", b =>
-                {
-                    b.HasOne("Saturn.Telegram.Db.Entities.UserEntity", "User")
-                        .WithOne()
-                        .HasForeignKey("Saturn.Telegram.Db.Entities.NamorevoGoreScoreEntity", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_namorevo_gore_scores_users_user_id");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Saturn.Telegram.Db.Entities.UserKarmaEntity", b =>
-                {
-                    b.HasOne("Saturn.Telegram.Db.Entities.UserEntity", "User")
-                        .WithOne()
-                        .HasForeignKey("Saturn.Telegram.Db.Entities.UserKarmaEntity", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_user_karma_users_user_id");
 
                     b.Navigation("User");
                 });
