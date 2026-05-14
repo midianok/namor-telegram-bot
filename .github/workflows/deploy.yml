@@ -34,9 +34,9 @@ jobs:
           file: ./Saturn.Telegram.Bot/Dockerfile
           platforms: linux/amd64
           push: true
-          tags: ghcr.io/midianok/saturn:latest
-          cache-from: type=registry,ref=ghcr.io/midianok/saturn:cache
-          cache-to: type=registry,ref=ghcr.io/midianok/saturn:cache,mode=max
+          tags: ghcr.io/midianok/namor:latest
+          cache-from: type=registry,ref=ghcr.io/midianok/namor:cache
+          cache-to: type=registry,ref=ghcr.io/midianok/namor:cache,mode=max
 
   build-and-push-api:
     name: Build & Push API image
@@ -66,9 +66,9 @@ jobs:
           file: ./Saturn.Telegram.Api/Dockerfile
           platforms: linux/amd64
           push: true
-          tags: ghcr.io/midianok/saturn-api:latest
-          cache-from: type=registry,ref=ghcr.io/midianok/saturn-api:cache
-          cache-to: type=registry,ref=ghcr.io/midianok/saturn-api:cache,mode=max
+          tags: ghcr.io/midianok/namor-api:latest
+          cache-from: type=registry,ref=ghcr.io/midianok/namor-api:cache
+          cache-to: type=registry,ref=ghcr.io/midianok/namor-api:cache,mode=max
 
   deploy:
     name: Deploy to server
@@ -98,5 +98,5 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd ${{ secrets.DEPLOY_PATH }}
-            docker compose pull saturn saturn-api
-            docker compose up -d saturn saturn-api
+            docker compose pull
+            docker compose up -d
