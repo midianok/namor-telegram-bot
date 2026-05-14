@@ -1,5 +1,5 @@
 ﻿services:
-  bot:
+  namor-bot:
     platform: linux/amd64
     image: ghcr.io/midianok/namor:latest
     build:
@@ -11,7 +11,7 @@
       db:
         condition: service_healthy
 
-  api:
+  namor-api:
     platform: linux/amd64
     image: ghcr.io/midianok/namor-api:latest
     build:
