@@ -10,7 +10,7 @@ namespace Saturn.Bot.Service.Operations.Ai;
 
 public class SilenceOperation : IOperation
 {
-    private const string Prompt = "В чате долго молчат. Расскажи какойю-нибудь историю про человека которого ты знаешь";
+    private const string Prompt = "В чате долго молчат. Расскажи какойю-нибудь безумную историю. Никого не тэгай и не отмечай.";
 
     private const int MinSilenceMinutes = 10;
     private const int MaxSilenceMinutes = 40;
