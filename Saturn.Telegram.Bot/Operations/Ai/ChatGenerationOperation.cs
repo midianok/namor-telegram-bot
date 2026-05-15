@@ -7,6 +7,7 @@ using Saturn.Telegram.Db.Entities;
 using Saturn.Telegram.Db.Repositories.Abstractions;
 using Saturn.Telegram.Lib.Operation;
 using Saturn.Telegram.Lib.Attributes;
+using Saturn.Telegram.Lib.Extensions;
 using Saturn.Telegram.Lib.Infrastructure.Abstractions;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -101,6 +102,19 @@ public class ChatGenerationOperation : IOperation
         if (!string.IsNullOrEmpty(senderName))
         {
             messages.Add(new SystemChatMessage($"Тебе сейчас пишет: {senderName}"));
+        }
+        
+        var replyPhoto = msg.ReplyToMessage?.Photo?.MaxBy(x => x.FileSize);
+        if (replyPhoto != null)
+        {
+            var imageBytes = await _telegramBotClient.DownloadFileAsync(replyPhoto.FileId);
+            messages.Add(new UserChatMessage(
+                ChatMessageContentPart.CreateImagePart(new BinaryData(imageBytes), "image/jpeg", ChatImageDetailLevel.Auto),
+                ChatMessageContentPart.CreateTextPart(request)));
+        }
+        else
+        {
+            messages.Add(new UserChatMessage(request));
         }
 
         messages.Add(new UserChatMessage(request));
