@@ -53,6 +53,7 @@ Configured via `.env` (picked up by Docker Compose):
 | `IMAGE_MANIPULATION_SERVICE_URL` | External image service endpoint |
 | `YOUTUBE_COOKIES_PATH` | Path to YouTube cookies.txt for yt-dlp (e.g. `/app/youtube_cookies.txt`), mounted via docker-compose |
 | `INSTAGRAM_COOKIES_PATH` | Path to Instagram cookies.txt for yt-dlp (e.g. `/app/instagram_cookies.txt`), mounted via docker-compose |
+| `ATLAS_CLOUD_API_KEY` | AtlasCloud API key for LLM inference (model: `qwen/qwen3-vl-8b-instruct`) |
 | `*OperationEnabled` | Feature flags per operation (e.g. `StatisticsOperationEnabled`) |
 
 ## Key Dependencies
