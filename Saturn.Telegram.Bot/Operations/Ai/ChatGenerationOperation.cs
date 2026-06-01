@@ -16,7 +16,7 @@ using Telegram.Bot.Types.Enums;
 
 namespace Saturn.Bot.Service.Operations.Ai;
 
-[GlobalCooldown(10)]
+[GlobalCooldown(3)]
 [ChatOnly("иди общайся в чат, хитрый пидарас")]
 public class ChatGenerationOperation : IOperation
 {
@@ -75,21 +75,24 @@ public class ChatGenerationOperation : IOperation
         var isReplyToBot = IsReplyToBot(msg);
         if (isReplyToBot)
         {
+            var botId = GetBotId();
             var messageChain = await _messageRepository.GetMessageChainAsync(msg.Chat.Id, msg.ReplyToMessage!.Id);
             if (messageChain.Count > 0)
             {
-                var userChatMessages = messageChain.OrderBy(x => x.MessageDate)
+                var chainMessages = messageChain.OrderBy(x => x.MessageDate)
                     .Select(x =>
                     {
+                        if (x.UserId == botId)
+                            return (ChatMessage)new AssistantChatMessage(x.Text ?? string.Empty);
                         var senderName = GetSenderName(x.User);
                         var text = string.IsNullOrEmpty(senderName) ? x.Text : $"[{senderName}]: {x.Text}";
-                        return new UserChatMessage(text);
+                        return (ChatMessage)new UserChatMessage(text);
                     });
-                messages.AddRange(userChatMessages);
+                messages.AddRange(chainMessages);
             }
             else
             {
-                messages.Add(new UserChatMessage(msg.ReplyToMessage.Text));
+                messages.Add(new AssistantChatMessage(msg.ReplyToMessage.Text ?? string.Empty));
             }
         }
 
@@ -116,8 +119,6 @@ public class ChatGenerationOperation : IOperation
         {
             messages.Add(new UserChatMessage(request));
         }
-
-        messages.Add(new UserChatMessage(request));
 
         await _telegramBotClient.SendChatAction(msg.Chat, ChatAction.Typing);
         var result = await _aiService.CompleteChatAsync(messages);
@@ -146,6 +147,12 @@ public class ChatGenerationOperation : IOperation
 
         var fullName = $"{user.FirstName} {user.LastName}".Trim();
         return string.IsNullOrEmpty(user.Username) ? fullName : $"{fullName} (@{user.Username})";
+    }
+
+    private long GetBotId()
+    {
+        var bot = _memoryCache.GetOrCreate($"{nameof(ChatGenerationOperation)}_user_bot", async _ => await _telegramBotClient.GetMe())?.GetAwaiter().GetResult();
+        return bot?.Id ?? 0;
     }
 
     private bool IsReplyToBot(Message msg)
