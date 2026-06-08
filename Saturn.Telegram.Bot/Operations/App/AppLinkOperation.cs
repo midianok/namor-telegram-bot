@@ -23,6 +23,6 @@ public class AppLinkOperation : IOperation
         var keyboard = new InlineKeyboardMarkup(
             InlineKeyboardButton.WithUrl("Открыть", $"https://t.me/rt5263bot/app?startapp={msg.Chat.Id}"));
 
-        await _botClient.SendMessage(msg.Chat, "НаморApp", replyMarkup: keyboard);
+        await _botClient.SendMessage(msg.Chat, "Намор App", replyMarkup: keyboard);
     }
 }
